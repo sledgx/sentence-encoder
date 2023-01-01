@@ -44,6 +44,36 @@ def createApp():
                 'error': str(e)
             }), 500
 
+    @app.route('/similarity', methods=['POST'])
+    def computeSimilarity():
+        try:
+            app.logger.info('POST /similarity')
+
+            data = request.form if request.form else request.json
+            left_text = data['left_text']
+            right_text = data['right_text']
+
+            if not (left_text and left_text.strip()):
+                raise Exception('left text is null or empty')
+
+            if not (right_text and right_text.strip()):
+                raise Exception('right text is null or empty')
+
+            app.logger.debug(f'input left sentence: {left_text}')
+            app.logger.debug(f'input right sentence: {right_text}')
+            result = sp.similarity(left_text, right_text)
+
+            app.logger.debug(f'output result: {result} - {type(result)}')
+            return jsonify({
+                'result': result
+            })
+        except Exception as e:
+            app.logger.error(f'request failed with error: {str(e)}')
+            app.logger.debug(f'error stack: {traceback.format_exc()}')
+            return jsonify({
+                'error': str(e)
+            }), 500
+
     CORS(app)
     Compress().init_app(app)
 
