@@ -7,7 +7,7 @@ from flask_compress import Compress
 from flask_cors import CORS
 from libs.processor import SentenceProcessor
 
-logging.basicConfig(format='%(asctime)s - %(levelname)s :: %(message)s')
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 def createApp():
@@ -24,10 +24,9 @@ def createApp():
         try:
             app.logger.info('POST /encode')
 
-            data = request.form if request.form else request.json
-            text = data['text']
+            text = getInput('text')
 
-            if not (text and text.strip()):
+            if not validText(text):
                 raise Exception('text is null or empty')
 
             app.logger.debug(f'input sentence: {text}')
@@ -49,14 +48,13 @@ def createApp():
         try:
             app.logger.info('POST /similarity')
 
-            data = request.form if request.form else request.json
-            left_text = data['left_text']
-            right_text = data['right_text']
+            left_text = getInput('left_text')
+            right_text = getInput('right_text')
 
-            if not (left_text and left_text.strip()):
+            if not validText(left_text):
                 raise Exception('left text is null or empty')
 
-            if not (right_text and right_text.strip()):
+            if not validText(right_text):
                 raise Exception('right text is null or empty')
 
             app.logger.debug(f'input left sentence: {left_text}')
@@ -73,6 +71,17 @@ def createApp():
             return jsonify({
                 'error': str(e)
             }), 500
+
+    def getInput(key: str) -> str:
+        data = request.form if request.form else request.json
+
+        if data is None or key not in data:
+            return None
+
+        return data[key]
+
+    def validText(text: str) -> bool:
+        return text and text.strip()
 
     CORS(app)
     Compress().init_app(app)
