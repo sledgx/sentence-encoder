@@ -10,11 +10,18 @@ from libs.processor import SentenceProcessor
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s')
 
 
-def createApp():
-    log_level = os.environ.get('LOG_LEVEL', 'info').upper()
+def getLogLevel() -> str:
+    level = os.environ.get('LOG_LEVEL', 'info')
 
+    if level not in ['error', 'warning', 'info', 'debug', 'notset']:
+        level = 'info'
+
+    return level.upper()
+
+
+def createApp():
     app = Flask(__name__)
-    app.logger.setLevel(log_level)
+    app.logger.setLevel(getLogLevel())
     sp = SentenceProcessor()
 
     app.logger.info('sentence encoder service')
