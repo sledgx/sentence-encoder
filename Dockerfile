@@ -2,8 +2,12 @@ FROM alpine:3.14 AS usem
 RUN apk add --no-cache wget tar
 WORKDIR /download
 
-RUN wget -O usem-large.tar.gz "https://tfhub.dev/google/universal-sentence-encoder-multilingual-large/3?tf-hub-format=compressed"
-RUN tar -zxvf usem-large.tar.gz
+ARG USEM_MODEL_FILE="usem-large.tar.gz"
+ARG USEM_MODEL_LINK="https://tfhub.dev/google/universal-sentence-encoder-multilingual-large/3?tf-hub-format=compressed"
+
+RUN wget -O $USEM_MODEL_FILE $USEM_MODEL_LINK
+RUN tar -zxvf $USEM_MODEL_FILE
+RUN rm $USEM_MODEL_FILE
 
 FROM tensorflow/tensorflow:2.8.0
 WORKDIR /app
