@@ -2,6 +2,12 @@
 
 Universal Sentence Encoder Multilingual as a service.
 
+## About the service
+
+The service allows you to transform a variable length text sentence into 512 dimensional vector.
+This is useful for performing ML experiments in the (embeddings)[https://developers.google.com/machine-learning/crash-course/embeddings/video-lecture] space.
+The service also allows you to calculate the similarity of two texts with a score ranging from 0 to 1.
+
 ## How to use
 
 All of the following examples will bring you the service on `http://localhost:8080`.
@@ -37,13 +43,21 @@ The service exposes two endpoints with different functionalities.
 
 ### Encode
 
-With this method you can convert a text into an embedding vector of size 512.
+With this method you can convert a text into an embedding vector.
 You can POST the text in json or form data format:
 
 ```sh
 curl -X POST http://localhost:8080/encode \
     -H 'Content-Type: application/json' \
     -d '{"text":"Hello, World!"}'
+```
+
+or
+
+```sh
+curl -X POST http://localhost:8080/encode \
+    -H 'Content-Type: multipart/form-data'
+    -F 'text=Hello, World!'
 ```
 
 ### Similarity
@@ -55,6 +69,15 @@ You can POST both texts in json format or form data:
 curl -X POST http://localhost:8080/similarity \
     -H 'Content-Type: application/json' \
     -d '{"left_text":"Hello everybody","right_text":"Ciao a tutti"}'
+```
+
+or
+
+```sh
+curl -X POST http://localhost:8080/similarity \
+    -H 'Content-Type: multipart/form-data' \
+    -F 'left_text=Hello everybody' \
+    -F 'right_text=Ciao a tutti'
 ```
 
 ## License

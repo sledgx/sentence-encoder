@@ -68,7 +68,7 @@ def createApp():
             app.logger.debug(f'input right sentence: {right_text}')
             result = sp.similarity(left_text, right_text)
 
-            app.logger.debug(f'output result: {result} - {type(result)}')
+            app.logger.debug(f'output result: {result}')
             return jsonify({
                 'result': result
             })
